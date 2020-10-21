@@ -8,6 +8,11 @@
 # See the LICENSE file at the top-level directory of this distribution and
 # at https://sourceforge.net/p/dps8m/code/ci/master/tree/LICENSE
 
+DESTDIR ?=
+PREFIX ?= /usr/local
+INSTALL_ROOT ?= $(DESTDIR)$(PREFIX)
+INSTALL_BIN ?= $(INSTALL_ROOT)/bin
+
 ifneq ($(OS),Windows_NT)
   UNAME_S := $(shell uname -s)
   ifeq ($(UNAME_S),Darwin)
@@ -18,8 +23,13 @@ endif
 ifeq ($(OS), OSX)
   msys_version = 0
 else
-  msys_version := $(if $(findstring Msys, $(shell uname -o)),$(word 1, $(subst ., ,$(shell uname -r))),0)
+  ifeq ($(UNAME_S), NetBSD)
+    msys_version = 0
+  else
+    msys_version := $(if $(findstring Msys, $(shell uname -o)),$(word 1, $(subst ., ,$(shell uname -r))),0)
+  endif
 endif
+
 
 ifeq ($(msys_version),0)
 else
@@ -35,10 +45,15 @@ else
 endif
   EXE = .exe
 else
+  ifeq ($(UNAME_S), NetBSD)
+    CC = cc
+    LD = cc
+  else
 #CC = gcc
 #LD = gcc
 CC = clang
 LD = clang
+  endif
 endif
 
 # for Linux (Ubuntu 12.10 64-bit) or Apple OS/X 10.8
@@ -65,6 +80,10 @@ else
     ifeq ($(UNAME_S),FreeBSD)
       CFLAGS += -I /usr/local/include -pthread
       LDFLAGS += -L/usr/local/lib
+    endif
+    ifeq ($(UNAME_S),NetBSD)
+      CFLAGS += `pkg-config --cflags libuv`
+      LDFLAGS += `pkg-config --libs libuv` -lm
     endif
 endif
 

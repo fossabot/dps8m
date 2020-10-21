@@ -20,10 +20,6 @@ all :
 
 SIMHx = ../simh-master
 
-INSTALL_ROOT ?= /usr/local/
-INSTALL_BIN ?= $(INSTALL_ROOT)/bin
-
-
 include ../Makefile.mk
 
 ifneq (,$(wildcard Makefile.local))
@@ -269,7 +265,15 @@ all: utils $(TAGS) locallibs_then_dps8
 #remote : remote.c fnp_udplib.o
 #	$(CC) remote.c -o remote fnp_udplib.o
 
-install: all
+install_utils: 
+
+
+install: all install_utils
+	@$(MAKE) -C ../utils install
+
+ifeq ($(UNAME_S), NetBSD)
+	install -d $(INSTALL_BIN)
+endif
 	cp dps8$(EXE) $(INSTALL_BIN)/dps8$(EXE)
 
 cscope:
