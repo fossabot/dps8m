@@ -4687,7 +4687,7 @@ fprintf (st, "\n");
 fprintf (st, "\n This software is made available under the terms of the ICU License,");
 fprintf (st, "\n version 1.8.1 or later.  For complete details, see the \"LICENSE.md\"");
 fprintf (st, "\n included or https://gitlab.com/dps8m/dps8m/-/blob/master/LICENSE.md");
-fprintf (st, "\r\n\r\n");
+fprintf (st, "\n");
     }
 return SCPE_OK;
 }
