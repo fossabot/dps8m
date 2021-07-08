@@ -4547,7 +4547,7 @@ if (flag) {
 	dirty++;
 #endif
 #if defined(SIM_GIT_COMMIT_ID)
-	fprintf (st, "\r\n\r\n Derived from the SIMH Simulation Framework:");
+	fprintf (st, "\r\n\r\n Built on the SIMH Simulation Framework:");
 	fprintf (st, "\n  Version: V%d.%d-%d", vmaj, vmin, vpat);
 	if (vdelt)
 		{
