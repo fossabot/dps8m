@@ -1090,26 +1090,35 @@ static void get_serial_number (void)
         uint cpun, sn;
         if (sscanf (buffer, "sn: %u", & cpu.switches.serno) == 1)
           {
-            sim_msg ("Serial number is %u\n", cpu.switches.serno);
-            havesn = true;
+			if (!sim_quiet)
+			  {
+	            sim_msg ("%s CPU serial number: %u\n", sim_name, cpu.switches.serno);
+			  }
+			havesn = true;
           }
         else if (sscanf (buffer, "sn%u: %u", & cpun, & sn) == 2)
           {
             if (cpun < N_CPU_UNITS_MAX)
               {
                 cpus[cpun].switches.serno = sn;
-                sim_msg ("Serial number of CPU %u is %u\n",
-                            cpun, cpus[cpun].switches.serno);
+				if (!sim_quiet)
+				  {
+	                sim_msg ("%s CPU %u serial number: %u\n",
+    	                        sim_name, cpun, cpus[cpun].switches.serno);
+				  }
                 havesn = true;
               }
           }
       }
-    if (! havesn)
+    if (!havesn)
       {
-        sim_msg ("Please register your system at "
-                    "https://ringzero.wikidot.com/wiki:register\n");
-        sim_msg ("or create the file 'serial.txt' containing the line "
-                    "'sn: 0'.\n");
+		if (!sim_quiet)
+		  {
+	        sim_msg ("\r\nPlease register your system at "
+    	                "https://ringzero.wikidot.com/wiki:register\n");
+	        sim_msg ("or create the file 'serial.txt' containing the line "
+    	                "'sn: 0'.\r\n\r\n");
+		  }
       }
     if (fp)
       fclose (fp);

@@ -411,6 +411,7 @@ endif
 else
 # git
 ver.h: FORCE
+	@$(SETV); printf '%s\n' "$(USE_BUILDER)" > "../../.builder.txt"
 	@$(SETV); ./make_ver.sh || \
 		$(SHELL) ./make_ver.sh || \
 			{ $(PRINTF) '%s\n' "Error running make_ver.sh"; exit 1; }
@@ -425,10 +426,10 @@ slte.inc : system_book_12_3.ascii
 
 .PHONY: locallibs_then_dps8
 locallibs_then_dps8: 
-	@($(SETV); $(CD) $(SIMHx) && $(MAKE) -f "GNUmakefile")
 	@($(SETV); $(CD) "../decNumber" && $(MAKE))
 	@$(SETV); $(ENV) MAKE="$(MAKE)" \
         $(MAKE) "ver.h"
+	@($(SETV); $(CD) $(SIMHx) && $(MAKE) -f "GNUmakefile")
 	@$(SETV); $(MAKE) "dps8$(EXE)"
 
 ###############################################################################
@@ -511,6 +512,7 @@ superclean realclean reallyclean: distclean
 .PHONY: distclean
 distclean: clean
 	-@$(SETV); $(RMF) "ver.h" || $(TRUE)
+	-@$(SETV); $(RMF) "../../.builder.txt" || $(TRUE)
 	-@$(SETV); $(RMF) "../../dps8m.state" || $(TRUE)
 	-@$(SETV); $(RMF) "restoreMultics.log" || $(TRUE)
 

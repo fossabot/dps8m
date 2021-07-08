@@ -3853,36 +3853,121 @@ static void usr1_signal_handler (UNUSED int sig)
 
 static void dps8_init (void)
   {
-    sim_msg ("%s simulator    ", sim_name);
-#ifdef TESTING
-    sim_msg ("#### TESTING BUILD ####\n");
+	if (!sim_quiet)
+	  {
+#if defined(GENERATED_MAKE_VER_H) && defined(VER_H_GIT_VERSION)
+#if defined(VER_H_GIT_PATCH_INT) && defined(VER_H_GIT_PATCH)
+#if VER_H_GIT_PATCH_INT < 1
+		sim_msg ("%s simulator %s", sim_name, VER_H_GIT_VERSION);
 #else
-    sim_msg ("Production build\n");
+	    sim_msg ("%s simulator %s+%s", sim_name, VER_H_GIT_VERSION, VER_H_GIT_PATCH);
+#endif
+#else
+		sim_msg ("%s simulator %s", sim_name, VER_H_GIT_VERSION);
+#endif
+#endif
+#if !defined(VER_H_GIT_VERSION) || !defined(GENERATED_MAKE_VER_H)
+		sim_msg ("%s simulator", sim_name);
+#endif
+#ifdef TESTING
+	sim_msg (" (");
+#ifndef HAVE_DPSOPT
+#define HAVE_DPSOPT 1
+#endif
+    sim_msg ("TESTING");
 #endif
 #ifdef ISOLTS
-    sim_msg ("#### ISOLTS BUILD ####\n");
+#ifdef HAVE_DPSOPT
+    sim_msg (", ");
+#else
+    sim_msg (" (");
+#endif
+#ifndef HAVE_DPSOPT
+#define HAVE_DPSOPT 1
+#endif
+    sim_msg ("ISOLTS");
 #endif
 #ifdef NEED_128
-    sim_msg ("#### NEED_128 BUILD ####\n");
+#ifdef HAVE_DPSOPT
+    sim_msg (", ");
+#else
+    sim_msg (" (");
+#endif
+#ifndef HAVE_DPSOPT
+#define HAVE_DPSOPT 1
+#endif
+    sim_msg ("N128");
 #endif
 #ifdef WAM
-    sim_msg ("#### WAM BUILD ####\n");
+#ifdef HAVE_DPSOPT
+    sim_msg (", ");
+#else
+    sim_msg (" (");
+#endif
+#ifndef HAVE_DPSOPT
+#define HAVE_DPSOPT 1
+#endif
+    sim_msg ("WAM");
 #endif
 #ifdef HDBG
-    sim_msg ("#### HDBG BUILD ####\n");
+#ifdef HAVE_DPSOPT
+    sim_msg (", ");
+#else
+    sim_msg (" (");
+#endif
+#ifndef HAVE_DPSOPT
+#define HAVE_DPSOPT 1
+#endif
+    sim_msg ("HDBG");
 #endif
 #ifdef ROUND_ROBIN
-    sim_msg ("#### ROUND_ROBIN BUILD ####\n");
+#ifdef HAVE_DPSOPT
+    sim_msg (", ");
+#else
+    sim_msg (" (");
+#endif
+#ifndef HAVE_DPSOPT
+#define HAVE_DPSOPT 1
+#endif
+    sim_msg ("RR");
 #endif
 #ifdef M_SHARED
-    sim_msg ("#### M_SHARED BUILD ####\n");
+#ifdef HAVE_DPSOPT
+    sim_msg (", ");
+#else
+    sim_msg (" (");
+#endif
+#ifndef HAVE_DPSOPT
+#define HAVE_DPSOPT 1
+#endif
+    sim_msg ("SHARED");
 #endif
 #ifdef LOCKLESS
-    sim_msg ("#### LOCKLESS BUILD ####\n");
+#ifdef HAVE_DPSOPT
+    sim_msg (", ");
+#else
+    sim_msg (" (");
+#endif
+#ifndef HAVE_DPSOPT
+#define HAVE_DPSOPT 1
+#endif
+    sim_msg ("LOCKLESS");
 #endif
 #ifdef TRACKER
-    sim_msg ("#### TRACKER BUILD ####\n");
+#ifdef HAVE_DPSOPT
+    sim_msg (", ");
+#else
+    sim_msg (" (");
 #endif
+#ifndef HAVE_DPSOPT
+#define HAVE_DPSOPT 1
+#endif
+    sim_msg ("TRACKER");
+#endif
+#ifdef HAVE_DPSOPT
+	sim_msg (")");
+#endif
+	  }
 
     // special dps8 initialization stuff that cant be done in reset, etc .....
 
@@ -3921,7 +4006,7 @@ static void dps8_init (void)
 #endif
 
 #ifdef SCUMEM
-#warn SCUMEM not working with new shared memory model
+#error SCUMEM not working with new shared memory model
 #endif
 
 #ifdef __MINGW64__
@@ -3937,17 +4022,23 @@ static void dps8_init (void)
 
     if (strlen (system_state->commit_id) == 0)
       {
-        sim_printf ("Setting up new system state\r\n");
+		if (!sim_quiet)
+		  {
+ 	       	sim_printf ("\r\nSetting up new system state\r\n");
+		  }
       }
     else
       {
         if (strcmp (system_state->commit_id, VER_H_GIT_HASH) != 0)
           {
-            sim_warn ("WARNING: system_state hash changed; system state may be corrupt!\r\n");
+            sim_warn ("\r\n\r\nWARNING: system_state hash changed; system state may be corrupt!\r\n\r\n");
           }
         else
           {
-            sim_printf ("System state restored\r\n");
+			if (!sim_quiet)
+			  {
+	            sim_printf ("\r\nSystem state restored\r\n");
+			  }
           }
       }
     strncpy (system_state->commit_id, VER_H_GIT_HASH, sizeof (system_state->commit_id));

@@ -140,6 +140,7 @@ get_git_ptch()
 								"Error: git describe --abbrev=40 failed."
 							exit 1
 						} # /* GITPAT */
+				# shellcheck disable=SC2250
 				OIFS="$IFS"
 				# shellcheck disable=SC2086
 				PATDIF=$(printf '%s\n' ${GITPAT:-XXXXXX} | \
@@ -376,6 +377,56 @@ get_utc_date()
 } # /* get_utc_date() */
 
 ###############################################################################
+# get_bld_user() returns "username", "username@host", or .builder.txt contents
+
+get_bld_user()
+{ # /* get_bld_user() */
+	MYNODENAME=$( (command -p env -i uname -n 2> /dev/null || \
+		true > /dev/null 2>&1) | \
+			cut -d " " -f 1 2> /dev/null || \
+				true > /dev/null 2>&1)
+	WHOAMIOUTP=$(command -p env -i who am i 2> /dev/null || \
+		true > /dev/null 2>&1)
+	WHOAMIOUTG=$(command -p env -i whoami 2> /dev/null || \
+		true > /dev/null 2>&1)
+	PREPAREDBY="${WHOAMIOUTP:-${WHOAMIOUTG:-}}"
+	BUILDERTXT="$(cat ../../.builder.txt 2> /dev/null | \
+		tr -d '\"' 2> /dev/null || \
+			true > /dev/null 2>&1)"
+
+	printf '%s\n' \
+		"${BUILDERTXT:-${PREPAREDBY:-unknown}@${MYNODENAME:-unknown}}" | \
+			sed -e 's/@unknown//' 2> /dev/null | \
+				sed -e 's/\"//' \
+				    -e 's/\\//' \
+				    -e "s/'//" 2> /dev/null ||
+					{ # /* PREPAREDBY */
+						printf >&2 '%s\n' \
+							"Error: sed failed."
+						exit 1
+					}
+} # /* get_bld_user() */
+
+###############################################################################
+# get_bld_osys() returns a string with the system name or "Unknown"
+
+get_bld_osys()
+{ # /* get_bld_osys() */
+	BLD_OSYS="$( (command -p env -i uname -mrs 2> /dev/null ||
+		true > /dev/null 2>&1) | \
+			tr -d '*' 2> /dev/null || \
+				true > /dev/null 2>&1)"
+
+	printf '%s\n' \
+		"${BLD_OSYS:-Unknown}" | \
+			tr -s ' ' 2> /dev/null ||
+			{ # /* BLD_OSYS */
+				printf >&2 '%s\n'
+					"Error: tr failed."
+			}
+} # /* get_bld_osys() */
+
+###############################################################################
 # Gather information or complain with an error.
 
 BUILD_VER="$(get_git_vers)" ||
@@ -413,6 +464,20 @@ BUILD_PAT="$(get_git_ptch)" ||
 		exit 1
 	} # /* BUILD_PAT */
 
+BUILD_USR="$(get_bld_user)" ||
+	{ # /* BUILD_USR (/
+		printf >&2 '%s\n' \
+			"Error: get_bld_user() failed."
+		exit 1
+	} # /* BUILD_USR */
+
+BUILD_SYS="$(get_bld_osys)" ||
+	{ # /* BUILD_SYS (/
+		printf >&2 '%s\n' \
+			"Error: get_bld_osys() failed."
+		exit 1
+	} # /* BUILD_SYS */
+
 ###############################################################################
 # Write out information or complain with an error.
 
@@ -433,11 +498,20 @@ printf '%s\n' \
 	'#define VER_H_GIT_PATCH \' \
 	"    \"${BUILD_PAT:-9999}\"" \
 	"" \
+	'#define VER_H_GIT_PATCH_INT \' \
+	"    ${BUILD_PAT:-9999}" \
+	"" \
 	'#define VER_H_GIT_HASH \' \
 	"    \"${BUILD_SHA:-0000000000000000000000000000000000000000}\"" \
 	"" \
 	'#define VER_H_PREP_DATE \' \
 	"    \"${BUILD_UTC:-1900-01-01}\"" \
+	"" \
+	'#define VER_H_PREP_USER \' \
+	"    \"${BUILD_USR:-Unknown}\"" \
+	"" \
+	'#define VER_H_PREP_OSYS \' \
+	"    \"${BUILD_SYS:-Unknown}\"" \
 	"" \
 	"#endif /* GENERATED_MAKE_VER_H */" \
 	> "./ver.h" ||

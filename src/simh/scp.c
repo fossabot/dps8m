@@ -1,6 +1,7 @@
 /* scp.c: simulator control program
 
    Copyright (c) 1993-2016, Robert M Supnik
+   Copyright (c) 2021 The DPS8M Development Team
 
    Permission is hereby granted, free of charge, to any person obtaining a
    copy of this software and associated documentation files (the "Software"),
@@ -242,6 +243,8 @@
 #if defined(HAVE_DLOPEN)                                /* Dynamic Readline support */
 #include <dlfcn.h>
 #endif
+
+#include "../dps8/ver.h"
 
 #ifndef MAX
 #define MAX(a,b)  (((a) >= (b)) ? (a) : (b))
@@ -4465,113 +4468,176 @@ int32 vmaj = SIM_MAJOR, vmin = SIM_MINOR, vpat = SIM_PATCH, vdelt = SIM_DELTA;
 const char *cpp = "";
 const char *build = "";
 const char *arch = "";
+int dirty = 0;
 
 if (cptr && (*cptr != 0))
     return SCPE_2MARG;
-fprintf (st, "%s simulator V%d.%d-%d", sim_name, vmaj, vmin, vpat);
-if (vdelt)
-    fprintf (st, " delta %d", vdelt);
-#if defined (SIM_VERSION_MODE)
-fprintf (st, " %s", SIM_VERSION_MODE);
-#endif
 if (flag) {
-    t_bool idle_capable;
-    uint32 os_ms_sleep_1, os_tick_size;
+//  t_bool idle_capable;
+//  uint32 os_ms_sleep_1, os_tick_size;
 
-    fprintf (st, "\n\tSimulator Framework Capabilities:");
-    fprintf (st, "\n\t\t%s", sim_si64);
-    fprintf (st, "\n\t\t%s", sim_sa64);
-    fprintf (st, "\n\t\t%s", eth_capabilities());
-    idle_capable = sim_timer_idle_capable (&os_ms_sleep_1, &os_tick_size);
-    fprintf (st, "\n\t\tIdle/Throttling support is %savailable", idle_capable ? "" : "NOT ");
-    if (sim_disk_vhd_support())
-        fprintf (st, "\n\t\tVirtual Hard Disk (VHD) support");
-    if (sim_disk_raw_support())
-        fprintf (st, "\n\t\tRAW disk and CD/DVD ROM support");
-#if defined (SIM_ASYNCH_IO)
-    fprintf (st, "\n\t\tAsynchronous I/O support");
-#endif
-#if defined (SIM_ASYNCH_MUX)
-    fprintf (st, "\n\t\tAsynchronous Multiplexer support");
-#endif
-#if defined (SIM_ASYNCH_CLOCKS)
-    fprintf (st, "\n\t\tAsynchronous Clock support");
-#endif
-#if defined (SIM_FRONTPANEL_VERSION)
-    fprintf (st, "\n\t\tFrontPanel API Version %d", SIM_FRONTPANEL_VERSION);
-#endif
-    fprintf (st, "\n\tHost Platform:");
-#if defined (__GNUC__) && defined (__VERSION__)
-    fprintf (st, "\n\t\tCompiler: GCC %s", __VERSION__);
-#elif defined (__clang_version__)
-    fprintf (st, "\n\t\tCompiler: clang %s", __clang_version__);
-#elif defined (_MSC_FULL_VER) && defined (_MSC_BUILD)
-    fprintf (st, "\n\t\tCompiler: Microsoft Visual C++ %d.%02d.%05d.%02d", _MSC_FULL_VER/10000000, (_MSC_FULL_VER/100000)%100, _MSC_FULL_VER%100000, _MSC_BUILD);
-#if defined(_DEBUG)
-    build = " (Debug Build)";
+//  fprintf (st, "\n\t%s Simulator Capabilities:", sim_name);
+//  fprintf (st, "\n\t\t%s", sim_si64);
+//  fprintf (st, "\n\t\t%s", sim_sa64);
+//  fprintf (st, "\n\t\t%s", eth_capabilities());
+//  idle_capable = sim_timer_idle_capable (&os_ms_sleep_1, &os_tick_size);
+//  fprintf (st, "\n\t\tIdle/Throttling support is %savailable", idle_capable ? "" : "NOT ");
+//  if (sim_disk_vhd_support())
+//      fprintf (st, "\n\t\tVirtual Hard Disk (VHD) support");
+//  if (sim_disk_raw_support())
+//      fprintf (st, "\n\t\tRAW disk and CD/DVD ROM support");
+//#if defined (SIM_ASYNCH_IO)
+//    fprintf (st, "\n\t\tAsynchronous I/O support");
+//#endif
+//#if defined (SIM_ASYNCH_MUX)
+//    fprintf (st, "\n\t\tAsynchronous Multiplexer support");
+//#endif
+//#if defined (SIM_ASYNCH_CLOCKS)
+//    fprintf (st, "\n\t\tAsynchronous Clock support");
+//#endif
+//#if defined (SIM_FRONTPANEL_VERSION)
+//    fprintf (st, "\n\t\tSIMH FrontPanel API Version %d", SIM_FRONTPANEL_VERSION);
+//#endif
+	fprintf (st, "\n %s Simulator:", sim_name);
+#if defined(GENERATED_MAKE_VER_H)
+#if defined(VER_H_GIT_VERSION)
+	if (strstr(VER_H_GIT_VERSION, "*"))
+	  {
+		dirty++;
+	  }
+#if defined(VER_H_GIT_PATCH) && defined(VER_H_GIT_PATCH_INT)
+#if defined(VER_H_GIT_HASH)
+#if VER_H_GIT_PATCH_INT < 1
+    fprintf (st, "\n  Version: %s (%s)", VER_H_GIT_VERSION, VER_H_GIT_HASH);
 #else
-    build = " (Release Build)";
+#define NO_SUPPORT_VERSION 1
+    fprintf (st, "\n  Version: %s+%s (%s)", VER_H_GIT_VERSION, VER_H_GIT_PATCH, VER_H_GIT_HASH);
 #endif
-#elif defined (__DECC_VER)
-    fprintf (st, "\n\t\tCompiler: DEC C %c%d.%d-%03d", ("T SV")[((__DECC_VER/10000)%10)-6], __DECC_VER/10000000, (__DECC_VER/100000)%100, __DECC_VER%10000);
-#elif defined (SIM_COMPILER)
+#else
+#if VER_H_GIT_PATCH_INT < 1
+	fprintf (st, "\n  Version: %s", VER_H_GIT_VERSION);
+#else
+#define NO_SUPPORT_VERSION 1
+	fprintf (st, "\n  Version: %s+%s", VER_H_GIT_VERSION, VER_H_GIT_PATCH);
+#endif
+#endif
+#else
+#if defined(VER_H_GIT_HASH)
+	fprintf (st, "\n  Version: %s (%s)", VER_H_GIT_VERSION, VER_H_GIT_HASH);
+#else
+	fprintf (st, "\n  Version: %s", VER_H_GIT_VERSION);
+#endif
+#endif
+#endif
+#endif
+#if defined(GENERATED_MAKE_VER_H) && defined(VER_H_GIT_DATE)
+	fprintf (st, "\n  Released: %s", VER_H_GIT_DATE);
+#endif
+#if defined(GENERATED_MAKE_VER_H) && defined(VER_H_GIT_DATE) && defined(VER_H_PREP_DATE)
+    fprintf (st, "; Kit Prepared: %s", VER_H_PREP_DATE);
+#endif
+#if defined(NO_SUPPORT_VERSION) || \
+    defined(TESTING)            || \
+    defined(ISOLTS)             || \
+    defined(HDBG)               || \
+    defined(TRACKER)
+#ifndef NO_SUPPORT_VERSION
+#define NO_SUPPORT_VERSION 1
+#endif
+	dirty++;
+#endif
+#if defined(SIM_GIT_COMMIT_ID)
+	fprintf (st, "\r\n\r\n Derived from the SIMH Simulation Framework:");
+	fprintf (st, "\n  Version: V%d.%d-%d", vmaj, vmin, vpat);
+	if (vdelt)
+		{
+	    	fprintf (st, " delta %d", vdelt);
+		}
+#if defined (SIM_VERSION_MODE)
+	fprintf (st, " %s", SIM_VERSION_MODE);
+#endif
+#endif                                                                       
+#if defined(SIM_GIT_COMMIT_ID)
 #define S_xstr(a) S_str(a)
 #define S_str(a) #a
-    fprintf (st, "\n\t\tCompiler: %s", S_xstr(SIM_COMPILER));
+	fprintf (st, " (%s)", S_xstr(SIM_GIT_COMMIT_ID));
 #undef S_str
 #undef S_xstr
 #endif
-#if defined(__GNUC__)
-#if defined(__OPTIMIZE__)
-    build = " (Release Build)";
-#else
-    build = " (Debug Build)";
+	if (dirty)
+		{
+			fprintf (st, "\r\n\r\n ****** THIS BUILD IS NOT SUPPORTED BY THE DPS8M DEVELOPMENT TEAM ******");
+		}
+    fprintf (st, "\n\n Build Information:");
+#if defined(VER_H_PREP_OSYS)
+	fprintf (st, "\n  Build OS: %s", VER_H_PREP_OSYS);
 #endif
+#if defined (__GNUC__) && defined (__VERSION__)
+#ifndef __clang_version__
+    fprintf (st, "\n  Compiler: GNU C %s", __VERSION__);
+#endif
+#if defined (__clang_version__)
+    fprintf (st, "\n  Compiler: Clang %s", __clang_version__);
+#endif
+#elif defined (_MSC_FULL_VER) && defined (_MSC_BUILD)
+    fprintf (st, "\n  Compiler: Microsoft C %d.%02d.%05d.%02d", _MSC_FULL_VER/10000000, (_MSC_FULL_VER/100000)%100, _MSC_FULL_VER%100000, _MSC_BUILD);
+#elif defined (__DECC_VER)
+    fprintf (st, "\n  Compiler: DEC C %c%d.%d-%03d", ("T SV")[((__DECC_VER/10000)%10)-6], __DECC_VER/10000000, (__DECC_VER/100000)%100, __DECC_VER%10000);
+#elif defined (SIM_COMPILER)
+#define S_xstr(a) S_str(a)
+#define S_str(a) #a
+    fprintf (st, "\n  Compiler: %s", S_xstr(SIM_COMPILER));
+#undef S_str
+#undef S_xstr
 #endif
 #if defined(_M_X64) || defined(_M_AMD64) || defined(__amd64__) || defined(__x86_64__)
-    arch = " arch: x64";
-#elif defined(_M_IX86) || defined(__i386)
-    arch = " arch: x86";
+    arch = " x86_64";
+#elif defined(_M_IX86) || defined(__i386) || defined(__i486) || defined(__i586) || defined(__i686) || defined(__ix86)
+    arch = " x86";
 #elif defined(_M_ARM64) || defined(__aarch64_)
-    arch = " arch: ARM64";
+    arch = " ARM64";
 #elif defined(_M_ARM) || defined(__arm__)
-    arch = " arch: ARM";
+    arch = " ARM";
 #elif defined(__ia64__) || defined(_M_IA64) || defined(__itanium__)
-    arch = " arch: IA-64";
-#endif
-#if defined (__DATE__) && defined (__TIME__)
-#ifdef  __cplusplus
-    cpp = "C++";
+    arch = " IA64";
 #else
-    cpp = "C";
+	arch = "";
 #endif
-    fprintf (st, "\n\t\tSimulator Compiled as %s%s%s on %s at %s", cpp, arch, build, __DATE__, __TIME__);
+	fprintf (st, "%s", arch);
+
+
+
+//    fprintf (st, "\n\t\tMemory Access: %s Endian", sim_end ? "Little" : "Big");
+//    fprintf (st, "\n\t\tMemory Pointer Size: %d bits", (int)sizeof(dptr)*8);
+//    fprintf (st, "\n\t\t%s", sim_toffset_64 ? "Large File (>2GB) support" : "No Large File support");
+//    fprintf (st, "\n\t\tSDL Video support: %s", vid_version());
+//#if defined (HAVE_PCREPOSIX_H)
+//    fprintf (st, "\n\t\tPCRE RegEx support for EXPECT commands");
+//#elif defined (HAVE_REGEX_H)
+//    fprintf (st, "\n\t\tRegEx support for EXPECT commands");
+//#else
+//    fprintf (st, "\n\t\tNo RegEx support for EXPECT commands");
+//#endif
+//  fprintf (st, "\n\t\tOS clock resolution: %dms", os_tick_size);
+//  fprintf (st, "\n\t\tTime taken by msleep(1): %dms", os_ms_sleep_1);
+#if defined(GENERATED_MAKE_VER_H) && defined(VER_H_PREP_USER)
+        fprintf (st, "\n  Built by: %s", VER_H_PREP_USER);
 #endif
-    fprintf (st, "\n\t\tMemory Access: %s Endian", sim_end ? "Little" : "Big");
-    fprintf (st, "\n\t\tMemory Pointer Size: %d bits", (int)sizeof(dptr)*8);
-    fprintf (st, "\n\t\t%s", sim_toffset_64 ? "Large File (>2GB) support" : "No Large File support");
-    fprintf (st, "\n\t\tSDL Video support: %s", vid_version());
-#if defined (HAVE_PCREPOSIX_H)
-    fprintf (st, "\n\t\tPCRE RegEx support for EXPECT commands");
-#elif defined (HAVE_REGEX_H)
-    fprintf (st, "\n\t\tRegEx support for EXPECT commands");
-#else
-    fprintf (st, "\n\t\tNo RegEx support for EXPECT commands");
-#endif
-    fprintf (st, "\n\t\tOS clock resolution: %dms", os_tick_size);
-    fprintf (st, "\n\t\tTime taken by msleep(1): %dms", os_ms_sleep_1);
+		fprintf (st, "\n\n Host System Information:");
 #if defined(__VMS)
     if (1) {
         char *arch = 
-#if defined(__ia64)
+#if defined(_M_X64) || defined(_M_AMD64) || defined(__amd64__) || defined(__x86_64__)
+    arch = " X64";
+#elif defined(__ia64)
             "I64";
 #elif defined(__ALPHA)
-            "Alpha";
+            "AXP";
 #else
             "VAX";
 #endif
-        fprintf (st, "\n\t\tOS: OpenVMS %s %s", arch, __VMS_VERSION);
-        }
+        fprintf (st, "\n  Executing on: %s/VMS %s", arch, __VMS_VERSION);
+    }
 #elif defined(_WIN32)
     if (1) {
         char *proc_id = getenv ("PROCESSOR_IDENTIFIER");
@@ -4592,16 +4658,16 @@ if (flag) {
                 } while (osversion[0] == '\0');
             _pclose (f);
             }
-        fprintf (st, "\n\t\tOS: %s", osversion);
-        fprintf (st, "\n\t\tArchitecture: %s%s%s, Processors: %s", arch, proc_arch3264 ? " on " : "", proc_arch3264 ? proc_arch3264  : "", procs);
-        fprintf (st, "\n\t\tProcessor Id: %s, Level: %s, Revision: %s", proc_id ? proc_id : "", proc_level ? proc_level : "", proc_rev ? proc_rev : "");
+        fprintf (st, "\n  Executing on: %s", osversion);
+        fprintf (st, "\n  Architecture: %s%s%s", arch, proc_arch3264 ? " on " : "", proc_arch3264 ? proc_arch3264  : "");
+//      fprintf (st, "\n  Processor Id: %s, Level: %s, Revision: %s", proc_id ? proc_id : "", proc_level ? proc_level : "", proc_rev ? proc_rev : "");
         }
 #else
     if (1) {
         char osversion[2*PATH_MAX+1] = "";
         FILE *f;
         
-        if ((f = popen ("uname -a", "r"))) {
+        if ((f = popen ("uname -mrs", "r"))) {
             memset (osversion, 0, sizeof(osversion));
             do {
                 if (NULL == fgets (osversion, sizeof(osversion)-1, f))
@@ -4610,25 +4676,15 @@ if (flag) {
                 } while (osversion[0] == '\0');
             pclose (f);
             }
-        fprintf (st, "\n\t\tOS: %s", osversion);
+        fprintf (st, "\n  Executing on: %s", osversion);
         }
 #endif
-    }
-#if defined(SIM_GIT_COMMIT_ID)
-#define S_xstr(a) S_str(a)
-#define S_str(a) #a
-fprintf (st, "%sgit commit id: %8.8s", flag ? "\n        " : "        ", S_xstr(SIM_GIT_COMMIT_ID));
-#undef S_str
-#undef S_xstr
-#endif
-#if defined(SIM_BUILD)
-#define S_xstr(a) S_str(a)
-#define S_str(a) #a
-fprintf (st, "%sBuild: %s", flag ? "\n        " : "        ", S_xstr(SIM_BUILD));
-#undef S_str
-#undef S_xstr
-#endif
 fprintf (st, "\n");
+fprintf (st, "\n This software is made available under the terms of the ICU License,");
+fprintf (st, "\n version 1.8.1 or later.  For complete details, see the \"LICENSE.md\"");
+fprintf (st, "\n included or https://gitlab.com/dps8m/dps8m/-/blob/master/LICENSE.md");
+fprintf (st, "\r\n\r\n");
+    }
 return SCPE_OK;
 }
 

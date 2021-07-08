@@ -2276,7 +2276,10 @@ t_stat set_fnp_server_port (UNUSED int32 arg, const char * buf)
     if (n < 1 || n > 65535)
       return SCPE_ARG;
     fnpData.telnet_port = n;
-    sim_printf ("FNP telnet server port set to %d\n", n);
+	if (!sim_quiet)
+	  {
+	    sim_printf ("FNP telnet server port set to %d\n", n);
+	  }
     return SCPE_OK;
   }
 
@@ -2285,7 +2288,10 @@ t_stat set_fnp_server_address (UNUSED int32 arg, const char * buf)
     if (fnpData.telnet_address)
       free (fnpData.telnet_address);
     fnpData.telnet_address = strdup (buf);
-    sim_printf ("FNP telnet server address set to %s\n", fnpData.telnet_address);
+	if (!sim_quiet)
+	  {
+	    sim_printf ("FNP telnet server address set to %s\n", fnpData.telnet_address);
+	  }
     return SCPE_OK;
   }
 
@@ -2297,13 +2303,19 @@ t_stat set_fnp_3270_server_port (UNUSED int32 arg, const char * buf)
     if (n < 1 || n > 65535)
       return SCPE_ARG;
     fnpData.telnet3270_port = n;
-    sim_printf ("FNP telnet3270 server port set to %d\n", n);
+	if (!sim_quiet)
+	  {
+	    sim_printf ("FNP telnet3270 server port set to %d\n", n);
+	  }
     return SCPE_OK;
   }
 
 t_stat fnp_start (UNUSED int32 arg, UNUSED const char * buf)
   {
-    sim_printf ("FNP force start\n");
+	if (!sim_quiet)
+	 {
+	    sim_printf ("FNP force start\n");
+	 }
     fnpuvInit (fnpData.telnet_port, fnpData.telnet_address);
     //fnpuv3270Init (fnpData.telnet3270_port);
     return SCPE_OK;
