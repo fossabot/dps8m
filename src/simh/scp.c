@@ -4546,6 +4546,7 @@ if (flag) {
 #else
 	fprintf (st, "\n  Released: %s", VER_H_GIT_DATE);
 #endif
+#endif
 #if defined(GENERATED_MAKE_VER_H) && defined(VER_H_GIT_DATE) && defined(VER_H_PREP_DATE)
     fprintf (st, "; Kit Prepared: %s", VER_H_PREP_DATE);
 #endif
