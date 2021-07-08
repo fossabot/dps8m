@@ -18,8 +18,10 @@
 ###############################################################################
 # Configuration:
 #
-#        V=1       Enable VERBOSE mode for compilation
-#        W=1       Enable extra warnings (-Wall) 
+#                  V=1              Enable verbose compilation output
+#                  W=1              Enable extra compilation warnings
+#            TESTING=1              Enable developmental testing code
+#        USE_BUILDER="String"       Enable a custom "Built by" string
 #
 ###############################################################################
 # Build
