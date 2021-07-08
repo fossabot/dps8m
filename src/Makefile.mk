@@ -109,7 +109,7 @@ endif
 ###############################################################################
 
 # Default FLAGS
-CFLAGS  += -g -O3
+CFLAGS  += -g -O3 -fno-strict-aliasing
 CFLAGS  += $(X_FLAGS)
 LDFLAGS += $(X_FLAGS)
 
