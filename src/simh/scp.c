@@ -4499,6 +4499,16 @@ if (flag) {
 //    fprintf (st, "\n\t\tSIMH FrontPanel API Version %d", SIM_FRONTPANEL_VERSION);
 //#endif
 	fprintf (st, "\n %s Simulator:", sim_name);
+#if defined(NO_SUPPORT_VERSION) || \
+    defined(TESTING)            || \
+    defined(ISOLTS)             || \
+    defined(HDBG)               || \
+    defined(TRACKER)
+#ifndef NO_SUPPORT_VERSION
+#define NO_SUPPORT_VERSION 1
+#endif
+	dirty++;
+#endif
 #if defined(GENERATED_MAKE_VER_H)
 #if defined(VER_H_GIT_VERSION)
 	if (strstr(VER_H_GIT_VERSION, "*"))
@@ -4531,20 +4541,13 @@ if (flag) {
 #endif
 #endif
 #if defined(GENERATED_MAKE_VER_H) && defined(VER_H_GIT_DATE)
+#if defined(NO_SUPPORT_VERSION)
+	fprintf (st, "\n  Modified: %s", VER_H_GIT_DATE);
+#else
 	fprintf (st, "\n  Released: %s", VER_H_GIT_DATE);
 #endif
 #if defined(GENERATED_MAKE_VER_H) && defined(VER_H_GIT_DATE) && defined(VER_H_PREP_DATE)
     fprintf (st, "; Kit Prepared: %s", VER_H_PREP_DATE);
-#endif
-#if defined(NO_SUPPORT_VERSION) || \
-    defined(TESTING)            || \
-    defined(ISOLTS)             || \
-    defined(HDBG)               || \
-    defined(TRACKER)
-#ifndef NO_SUPPORT_VERSION
-#define NO_SUPPORT_VERSION 1
-#endif
-	dirty++;
 #endif
 #if defined(SIM_GIT_COMMIT_ID)
 	fprintf (st, "\r\n\r\n Built on the SIMH Simulation Framework:");
