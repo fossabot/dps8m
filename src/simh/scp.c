@@ -4507,6 +4507,8 @@ if (flag) {
 #ifndef NO_SUPPORT_VERSION
 #define NO_SUPPORT_VERSION 1
 #endif
+#endif
+#if defined(NO_SUPPORT_VERSION)
 	dirty++;
 #endif
 #if defined(GENERATED_MAKE_VER_H)
