@@ -456,7 +456,6 @@ superclean realclean reallyclean: distclean
 
 .PHONY: distclean
 distclean: clean
-	@$(SETV); $(RMF) "ver.h" || $(TRUE)
 	@$(SETV); $(RMF) "../../dps8m.state" || $(TRUE)
 	@$(SETV); $(RMF) "restoreMultics.log" || $(TRUE)
 
@@ -472,6 +471,8 @@ clean:
 	@$(SETV); $(RMF) ../../"$(KITNAME)"."$(TARXT)" || $(TRUE)
 	@$(SETV); $(RMF) ../../"$(KITNAME)"."$(TARXT)".* || $(TRUE)
 	@$(SETV); $(RMF) "../../.builder.txt" || $(TRUE)
+	@$(SETV); $(RMF) "../../.buildos.txt" || $(TRUE)
+	@$(SETV); $(RMF) "ver.h" || $(TRUE)
 
 ###############################################################################
 
