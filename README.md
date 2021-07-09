@@ -1,5 +1,7 @@
 # DPS8M
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/fe78025cb2a34b0b8c2da478c5307077)](https://app.codacy.com/gh/johnsonjh/dps8m?utm_source=github.com&utm_medium=referral&utm_content=johnsonjh/dps8m&utm_campaign=Badge_Grade_Settings)
+
 * **DPS8M** is a simulator for the *GE Large Systems* 6000‑series of mainframe
   computers « Honeywell 6180, Series‑60∕Level‑68, Honeywell∕Bull DPS‑8∕M »
   descended from the GE‑645 and engineered to support the **Multics**
