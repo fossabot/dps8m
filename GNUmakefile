@@ -18,11 +18,26 @@
 ###############################################################################
 # Configuration:
 #
-#                  V=1              Enable verbose compilation output
-#                  W=1              Enable extra compilation warnings
-#            TESTING=1              Enable developmental testing code
-#        NO_LOCKLESS=1              Revert to previous threading code
-#        USE_BUILDER="String"       Enable a custom "Built by" string
+#     Build flag (ex: make V=1)           Description of build flag
+#    ###########################    ######################################
+#
+#                  V=1                Enable verbose compilation output
+#                  W=1                Enable extra compilation warnings
+#            TESTING=1                Enable developmental testing code
+#        NO_LOCKLESS=1                Revert to previous threading code
+#             ISOLTS=1                XXX /* Description Needed! */ XXX
+#           NEED_128=1                XXX /* Description Needed! */ XXX
+#                WAM=1                XXX /* Description Needed! */ XXX
+#        ROUND_ROBIN=1                XXX /* Description Needed! */ XXX
+#               HDBG=1                XXX /* Description Needed! */ XXX
+#            TRACKER=1                XXX /* Description Needed! */ XXX
+#              CROSS=MINGW64          Enable MinGW-64 cross-compilation
+#
+#     *** The following flags are inteded for use by developers, scripts,
+#     and packagers, and may have non-intuitive meanings or requirements.
+#
+#        USE_BUILDER="String"         Enable a custom "Built by" string
+#        USE_BUILDOS="String"         Enable a custom "Built OS" string
 #
 ###############################################################################
 # Build
