@@ -21,6 +21,7 @@
 #                  V=1              Enable verbose compilation output
 #                  W=1              Enable extra compilation warnings
 #            TESTING=1              Enable developmental testing code
+#        NO_LOCKLESS=1              Revert to previous threading code
 #        USE_BUILDER="String"       Enable a custom "Built by" string
 #
 ###############################################################################
