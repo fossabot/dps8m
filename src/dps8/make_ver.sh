@@ -215,8 +215,6 @@ get_git_date()
 ###############################################################################
 # get_git_vers() returns a formatted version from the current git environment.
 
-# TODO(jhj): Document examples!
-
 get_git_vers()
 { # /* get_git_vers() /*
 	if command -p true 2> /dev/null 1>&2; then # /* TRUE */
@@ -224,7 +222,8 @@ get_git_vers()
 			GITTEST=$(git version 2> /dev/null)
 			if [ -n "${GITTEST:-}" ] &&
 				[ ! -z "${GITTEST:-}" ]; then # /* GITTEST */
-				BRANCH=$(git rev-parse --abbrev-ref HEAD 2> /dev/null)
+				BRANCH=$(git rev-parse --abbrev-ref HEAD 2> /dev/null ||
+					true)
 				GITVER=$(git describe --abbrev=0 --dirty='*' --tags --always \
 					2> /dev/null)
 				GITPAT=$(git describe --abbrev=40 --dirty='*' --tags --always \
@@ -263,7 +262,7 @@ get_git_vers()
 
 	GIT_SOURCE_INFO="${GIT_OUT:-0.0.0}"
 	GIT_SOURCE_XFRM=$(printf '%s\n' "${GIT_SOURCE_INFO:?}" |
-		sed -e 's/^R//' 2> /dev/null) ||
+		sed -e 's/^R//' -e 's/_/-/g' 2> /dev/null) ||
 			{ # /* sed */
 				printf >&2 '%s\n' \
 					"Error: sed transform failed."
