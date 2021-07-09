@@ -407,7 +407,7 @@ get_bld_user()
 } # /* get_bld_user() */
 
 ###############################################################################
-# get_bld_osys() returns a string with the system name or "Unknown"
+# get_bld_osys() returns the OS name, contents of .buildos.txt, or "Unknown"
 
 get_bld_osys()
 { # /* get_bld_osys() */
@@ -415,7 +415,12 @@ get_bld_osys()
 		true > /dev/null 2>&1) | \
 			tr -d '*' 2> /dev/null || \
 				true > /dev/null 2>&1)"
-
+	if [ -f "../../.buildos.txt" ]; then
+		BLD_OSYS="$(cat ../../.buildos.txt 2> /dev/null | \
+			tr -d '\"' 2> /dev/null | \
+			tr -d '*' 2> /dev/null || \
+				true > /dev/null 2>&1)"
+	fi
 	printf '%s\n' \
 		"${BLD_OSYS:-Unknown}" | \
 			tr -s ' ' 2> /dev/null ||

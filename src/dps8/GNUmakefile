@@ -339,10 +339,10 @@ ifeq (,$(wildcard ../../.git))
 ifeq (,$(wildcard ver.h~))
 # not git, not kit
 ver.h:
-	@$(SETV); $(RMF) ver.h
+	@$(SETV); $(RMF) "./ver.h"
 	@$(PRINTF) '%s\n' "WARNING: This source tree does not appear to be a" \
 	                  "         full git clone or a complete source kit."
-	@$(SETV); $(TOUCH) ver.h
+	@$(SETV); $(TOUCH) "./ver.h"
 else
 # kit
 ver.h:
@@ -351,10 +351,15 @@ endif
 else
 # git
 ver.h: FORCE
-	@$(SETV); printf '%s\n' "$(USE_BUILDER)" > "../../.builder.txt"
+ifneq ($(USE_BUILDER),)
+	@$(SETV); $(PRINTF) '%s\n' "$(USE_BUILDER)" > "../../.builder.txt"
+endif
+ifneq ($(USE_BUILDOS),)
+	@$(SETV); $(PRINTF) '%s\n' "$(USE_BUILDOS)" > "../../.buildos.txt"
+endif
 	@$(SETV); ./make_ver.sh || \
 		$(SHELL) ./make_ver.sh || \
-			{ $(PRINTF) '%s\n' "Error running make_ver.sh"; exit 1; }
+			{ $(PRINTF) '%s\n' "Error: Unable to run make_ver.sh"; exit 1; }
 endif
 
 ###############################################################################
