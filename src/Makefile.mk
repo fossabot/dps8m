@@ -55,8 +55,9 @@ CP         ?= cp -f
 TOUCH      ?= touch
 TEST       ?= test
 PRINTF     ?= printf
-MAKETAR    ?= tar $(ZCTV)
-TARXT      ?= tar
+TAR        ?= tar
+MAKETAR    ?= $(TAR) --owner=dps8m --group=dps8m --posix -c --transform 's/^/.\/dps8\//g' -$(ZCTV)
+TARXT      ?= $(TAR)
 COMPRESS   ?= gzip -f -9
 GUNZIP     ?= gzip -d
 COMPRESSXT ?= gz
