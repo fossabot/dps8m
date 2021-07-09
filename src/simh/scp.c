@@ -4520,27 +4520,111 @@ if (flag) {
 #if defined(VER_H_GIT_PATCH) && defined(VER_H_GIT_PATCH_INT)
 #if defined(VER_H_GIT_HASH)
 #if VER_H_GIT_PATCH_INT < 1
-    fprintf (st, "\n  Version: %s (%s)", VER_H_GIT_VERSION, VER_H_GIT_HASH);
+    fprintf (st, "\n   Version: %s\n    Commit: %s", VER_H_GIT_VERSION, VER_H_GIT_HASH);
 #else
 #define NO_SUPPORT_VERSION 1
-    fprintf (st, "\n  Version: %s+%s (%s)", VER_H_GIT_VERSION, VER_H_GIT_PATCH, VER_H_GIT_HASH);
+    fprintf (st, "\n   Version: %s+%s\n    Commit: %s", VER_H_GIT_VERSION, VER_H_GIT_PATCH, VER_H_GIT_HASH);
 #endif
 #else
 #if VER_H_GIT_PATCH_INT < 1
-	fprintf (st, "\n  Version: %s", VER_H_GIT_VERSION);
+	fprintf (st, "\n   Version: %s", VER_H_GIT_VERSION);
 #else
 #define NO_SUPPORT_VERSION 1
-	fprintf (st, "\n  Version: %s+%s", VER_H_GIT_VERSION, VER_H_GIT_PATCH);
+	fprintf (st, "\n   Version: %s+%s", VER_H_GIT_VERSION, VER_H_GIT_PATCH);
 #endif
 #endif
 #else
 #if defined(VER_H_GIT_HASH)
-	fprintf (st, "\n  Version: %s (%s)", VER_H_GIT_VERSION, VER_H_GIT_HASH);
+	fprintf (st, "\n   Version: %s\n    Commit: %s", VER_H_GIT_VERSION, VER_H_GIT_HASH);
 #else
-	fprintf (st, "\n  Version: %s", VER_H_GIT_VERSION);
+	fprintf (st, "\n   Version: %s", VER_H_GIT_VERSION);
 #endif
 #endif
 #endif
+#endif
+#ifdef TESTING
+    fprintf (st, "\n   Options: ");
+#ifndef HAVE_DPSOPT
+#define HAVE_DPSOPT 1
+#endif
+    fprintf (st, "TESTING");
+#endif
+#ifdef ISOLTS
+#ifdef HAVE_DPSOPT
+    fprintf (st, ", ");
+#else
+    fprintf (st, "\n   Options: ");
+#endif
+#ifndef HAVE_DPSOPT
+#define HAVE_DPSOPT 1
+#endif
+    fprintf (st, "ISOLTS");
+#endif
+#ifdef NEED_128
+#ifdef HAVE_DPSOPT
+    fprintf (st, ", ");
+#else
+    fprintf (st, "\n   Options: ");
+#endif
+#ifndef HAVE_DPSOPT
+#define HAVE_DPSOPT 1
+#endif
+    fprintf (st, "NEED_128");
+#endif
+#ifdef WAM
+#ifdef HAVE_DPSOPT
+    fprintf (st, ", ");
+#else
+    fprintf (st, "\n   Options: ");
+#endif
+#ifndef HAVE_DPSOPT
+#define HAVE_DPSOPT 1
+#endif
+    fprintf (st, "WAM");
+#endif
+#ifdef HDBG
+#ifdef HAVE_DPSOPT
+    fprintf (st, ", ");
+#else
+    fprintf (st, "\n   Options: ");
+#endif
+#ifndef HAVE_DPSOPT
+#define HAVE_DPSOPT 1
+#endif
+    fprintf (st, "HDBG");
+#endif
+#ifdef ROUND_ROBIN
+#ifdef HAVE_DPSOPT
+    fprintf (st, ", ");
+#else
+    fprintf (st, "\n   Options: ");
+#endif
+#ifndef HAVE_DPSOPT
+#define HAVE_DPSOPT 1
+#endif
+    fprintf (st, "ROUND_ROBIN");
+#endif
+#ifdef LOCKLESS
+#ifdef HAVE_DPSOPT
+    fprintf (st, ", ");
+#else
+    fprintf (st, "\n   Options: ");
+#endif
+#ifndef HAVE_DPSOPT
+#define HAVE_DPSOPT 1
+#endif
+    fprintf (st, "LOCKLESS");
+#endif
+#ifdef TRACKER
+#ifdef HAVE_DPSOPT
+    fprintf (st, ", ");
+#else
+    fprintf (st, "\n   Options: ");
+#endif
+#ifndef HAVE_DPSOPT
+#define HAVE_DPSOPT 1
+#endif
+    fprintf (st, "TRACKER");
 #endif
 #if defined(GENERATED_MAKE_VER_H) && defined(VER_H_GIT_DATE)
 #if defined(NO_SUPPORT_VERSION)
@@ -4553,8 +4637,8 @@ if (flag) {
     fprintf (st, "; Kit Prepared: %s", VER_H_PREP_DATE);
 #endif
 #if defined(SIM_GIT_COMMIT_ID)
-	fprintf (st, "\r\n\r\n Built on the SIMH Simulation Framework:");
-	fprintf (st, "\n  Version: V%d.%d-%d", vmaj, vmin, vpat);
+	fprintf (st, "\r\n\r\n Built using the SIMH Simulation Framework:");
+	fprintf (st, "\n   Version: %d.%d-%d", vmaj, vmin, vpat);
 	if (vdelt)
 		{
 	    	fprintf (st, " delta %d", vdelt);
@@ -4642,7 +4726,7 @@ if (flag) {
 #else
             "VAX";
 #endif
-        fprintf (st, "\n  Executing on: %s/VMS %s", arch, __VMS_VERSION);
+        fprintf (st, "\n    Host OS: %s/VMS %s", arch, __VMS_VERSION);
     }
 #elif defined(_WIN32)
     if (1) {
@@ -4664,8 +4748,8 @@ if (flag) {
                 } while (osversion[0] == '\0');
             _pclose (f);
             }
-        fprintf (st, "\n  Executing on: %s", osversion);
-        fprintf (st, "\n  Architecture: %s%s%s", arch, proc_arch3264 ? " on " : "", proc_arch3264 ? proc_arch3264  : "");
+        fprintf (st, "\n   Host OS: %s", osversion);
+        fprintf (st, "\n Host Arch: %s%s%s", arch, proc_arch3264 ? " on " : "", proc_arch3264 ? proc_arch3264  : "");
 //      fprintf (st, "\n  Processor Id: %s, Level: %s, Revision: %s", proc_id ? proc_id : "", proc_level ? proc_level : "", proc_rev ? proc_rev : "");
         }
 #else
@@ -4682,7 +4766,7 @@ if (flag) {
                 } while (osversion[0] == '\0');
             pclose (f);
             }
-        fprintf (st, "\n  Executing on: %s", osversion);
+        fprintf (st, "\n   Host OS: %s", osversion);
         }
 #endif
 fprintf (st, "\n");

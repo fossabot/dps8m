@@ -3869,11 +3869,8 @@ static void dps8_init (void)
 #if !defined(VER_H_GIT_VERSION) || !defined(GENERATED_MAKE_VER_H)
 		sim_msg ("%s simulator", sim_name);
 #endif
-
-
-
 #ifdef TESTING
-	sim_msg (" (");
+    sim_msg ("\n Options: ");
 #ifndef HAVE_DPSOPT
 #define HAVE_DPSOPT 1
 #endif
@@ -3883,7 +3880,7 @@ static void dps8_init (void)
 #ifdef HAVE_DPSOPT
     sim_msg (", ");
 #else
-    sim_msg (" (");
+    sim_msg ("\n Options: ");
 #endif
 #ifndef HAVE_DPSOPT
 #define HAVE_DPSOPT 1
@@ -3894,18 +3891,18 @@ static void dps8_init (void)
 #ifdef HAVE_DPSOPT
     sim_msg (", ");
 #else
-    sim_msg (" (");
+    sim_msg ("\n Options: ");
 #endif
 #ifndef HAVE_DPSOPT
 #define HAVE_DPSOPT 1
 #endif
-    sim_msg ("N128");
+    sim_msg ("NEED_128");
 #endif
 #ifdef WAM
 #ifdef HAVE_DPSOPT
     sim_msg (", ");
 #else
-    sim_msg (" (");
+    sim_msg ("\n Options: ");
 #endif
 #ifndef HAVE_DPSOPT
 #define HAVE_DPSOPT 1
@@ -3916,7 +3913,7 @@ static void dps8_init (void)
 #ifdef HAVE_DPSOPT
     sim_msg (", ");
 #else
-    sim_msg (" (");
+    sim_msg ("\n Options: ");
 #endif
 #ifndef HAVE_DPSOPT
 #define HAVE_DPSOPT 1
@@ -3927,29 +3924,18 @@ static void dps8_init (void)
 #ifdef HAVE_DPSOPT
     sim_msg (", ");
 #else
-    sim_msg (" (");
+    sim_msg ("\n Options: ");
 #endif
 #ifndef HAVE_DPSOPT
 #define HAVE_DPSOPT 1
 #endif
-    sim_msg ("RR");
-#endif
-#ifdef M_SHARED
-#ifdef HAVE_DPSOPT
-    sim_msg (", ");
-#else
-    sim_msg (" (");
-#endif
-#ifndef HAVE_DPSOPT
-#define HAVE_DPSOPT 1
-#endif
-    sim_msg ("SHARED");
+    sim_msg ("ROUND_ROBIN");
 #endif
 #ifdef LOCKLESS
 #ifdef HAVE_DPSOPT
     sim_msg (", ");
 #else
-    sim_msg (" (");
+    sim_msg ("\n Options: ");
 #endif
 #ifndef HAVE_DPSOPT
 #define HAVE_DPSOPT 1
@@ -3960,15 +3946,12 @@ static void dps8_init (void)
 #ifdef HAVE_DPSOPT
     sim_msg (", ");
 #else
-    sim_msg (" (");
+    sim_msg ("\n Options: ");
 #endif
 #ifndef HAVE_DPSOPT
 #define HAVE_DPSOPT 1
 #endif
     sim_msg ("TRACKER");
-#endif
-#ifdef HAVE_DPSOPT
-	sim_msg (")");
 #endif
 #if defined(GENERATED_MAKE_VER_H) && defined(VER_H_GIT_HASH)
 		sim_msg ("\nGit hash: %s", VER_H_GIT_HASH);
