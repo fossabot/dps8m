@@ -3869,6 +3869,9 @@ static void dps8_init (void)
 #if !defined(VER_H_GIT_VERSION) || !defined(GENERATED_MAKE_VER_H)
 		sim_msg ("%s simulator", sim_name);
 #endif
+
+
+
 #ifdef TESTING
 	sim_msg (" (");
 #ifndef HAVE_DPSOPT
@@ -3966,6 +3969,9 @@ static void dps8_init (void)
 #endif
 #ifdef HAVE_DPSOPT
 	sim_msg (")");
+#endif
+#if defined(GENERATED_MAKE_VER_H) && defined(VER_H_GIT_HASH)
+		sim_msg ("\nGit hash: %s", VER_H_GIT_HASH);
 #endif
 	  }
 
